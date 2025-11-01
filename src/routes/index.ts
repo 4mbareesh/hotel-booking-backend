@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import type { Request, Response, Router as ExpressRouter } from 'express'
 import roomtypeRoutes from './room-type'
+import searchRoutes from './search'
 
 const router: ExpressRouter = Router()
 
@@ -9,6 +10,7 @@ router.get('/api', (_req: Request, res: Response) => {
 })
 
 router.use('/api/rooms', roomtypeRoutes)
+router.use('/api/search', searchRoutes)
 
 router.use('/', (_req: Request, res: Response) => {
   res.sendStatus(404)

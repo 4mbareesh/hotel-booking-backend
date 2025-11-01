@@ -1,0 +1,22 @@
+meta {
+  name: get-room-by-search
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/search?guests=2&checkIn=2025-12-1&checkOut=2025-12-4
+  body: none
+  auth: inherit
+}
+
+params:query {
+  guests: 2
+  checkIn: 2025-12-1
+  checkOut: 2025-12-4
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
