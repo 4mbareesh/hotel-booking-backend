@@ -1,0 +1,33 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch --env-file=.env ./src/index.ts",
+    "build": "tsc --build",
+    "start": "node --env-file=.env dist/index.js",
+    "clean": "rimraf \"{.next,dist,build,out,node_modules}\"",
+    "check-format": "prettier --check .",
+    "check-types": "tsc --pretty --noEmit",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.1",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.2",
+    "morgan": "^1.10.1",
+    "tsx": "^4.20.6"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/morgan": "^1.9.10",
+    "typescript": "^5.9.3"
+  }
+}
