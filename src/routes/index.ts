@@ -1,14 +1,14 @@
 import { Router } from 'express'
-import type { Request, Response } from 'express'
-import roomRoutes from './room'
+import type { Request, Response, Router as ExpressRouter } from 'express'
+import roomtypeRoutes from './room-type'
 
-const router = Router()
+const router: ExpressRouter = Router()
 
 router.get('/api', (_req: Request, res: Response) => {
   res.sendStatus(200)
 })
 
-router.use('/api/rooms', roomRoutes)
+router.use('/api/rooms', roomtypeRoutes)
 
 router.use('/', (_req: Request, res: Response) => {
   res.sendStatus(404)

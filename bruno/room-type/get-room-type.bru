@@ -1,0 +1,16 @@
+meta {
+  name: get-room-type
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/rooms
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
