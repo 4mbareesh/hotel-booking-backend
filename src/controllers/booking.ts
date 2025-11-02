@@ -165,6 +165,7 @@ export const createBooking = async (req: Request<{}, {}, CreateBookingBody>, res
         summary: {
           bookingId: savedBooking._id,
           customerName: savedBooking.customerName,
+          customerPhone: savedBooking.customerPhone,
           roomType: roomType.name,
           checkIn: checkIn.toISOString().split('T')[0],
           checkOut: checkOut.toISOString().split('T')[0],
