@@ -1,0 +1,16 @@
+meta {
+  name: delete-room-type
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{base_url}}/rooms/64f8d2b3c9a1234567890abc
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

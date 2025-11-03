@@ -1,0 +1,16 @@
+meta {
+  name: search-available-rooms
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/search?checkIn=2025-12-01&checkOut=2025-12-03&guests=2
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

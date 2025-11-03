@@ -1,0 +1,26 @@
+meta {
+  name: put-room-type
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/rooms/64f8d2b3c9a1234567890abc
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Updated Deluxe Room",
+    "description": "Updated luxurious room with city view, king-size bed, and modern amenities",
+    "maxOccupancy": 3,
+    "pricePerNight": 3500,
+    "totalQuantity": 8
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
