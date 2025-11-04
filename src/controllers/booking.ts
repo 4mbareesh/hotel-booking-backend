@@ -95,6 +95,14 @@ export const createBooking = async (req: Request<{}, {}, CreateBookingBody>, res
       return
     }
 
+    if (!roomType.isActive) {
+      res.status(400).json({
+        success: false,
+        message: 'This room type is currently inactive and cannot be booked'
+      })
+      return
+    }
+
     // Validate guest count against room capacity
     if (numberOfGuests > roomType.maxOccupancy) {
       res.status(400).json({

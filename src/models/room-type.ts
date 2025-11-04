@@ -6,6 +6,7 @@ export interface IRoomType extends Document {
   maxOccupancy: number
   pricePerNight: number
   totalQuantity: number
+  isActive: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -37,6 +38,10 @@ const RoomTypeSchema: Schema = new Schema(
       type: Number,
       required: [true, 'Total quantity is required'],
       min: [1, 'Total quantity must be at least 1']
+    },
+    isActive: {
+      type: Boolean,
+      default: true
     }
   },
   {

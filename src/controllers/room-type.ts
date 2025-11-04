@@ -9,6 +9,7 @@ interface CreateRoomTypeBody {
   maxOccupancy: number
   pricePerNight: number
   totalQuantity: number
+  isActive?: boolean
 }
 
 // Get all room types
@@ -69,15 +70,26 @@ export const getRoomTypeById = async (req: Request, res: Response): Promise<void
 }
 
 // Create a new room type
-export const createRoomType = async (req: Request<{}, {}, CreateRoomTypeBody>, res: Response): Promise<void> => {
+export const createRoomType = async (
+  req: Request<{}, {}, CreateRoomTypeBody>,
+  res: Response
+): Promise<void> => {
   try {
-    const { name, description, maxOccupancy, pricePerNight, totalQuantity } = req.body
+    const {
+      name,
+      description,
+      maxOccupancy,
+      pricePerNight,
+      totalQuantity,
+      isActive = true
+    } = req.body
 
     // Validate required fields
     if (!name || !description || !maxOccupancy || !pricePerNight || !totalQuantity) {
       res.status(400).json({
         success: false,
-        message: 'All fields are required: name, description, maxOccupancy, pricePerNight, totalQuantity'
+        message:
+          'All fields are required: name, description, maxOccupancy, pricePerNight, totalQuantity'
       })
       return
     }
@@ -86,7 +98,8 @@ export const createRoomType = async (req: Request<{}, {}, CreateRoomTypeBody>, r
     if (maxOccupancy < 1 || pricePerNight < 0 || totalQuantity < 1) {
       res.status(400).json({
         success: false,
-        message: 'Invalid values: maxOccupancy and totalQuantity must be at least 1, pricePerNight must be non-negative'
+        message:
+          'Invalid values: maxOccupancy and totalQuantity must be at least 1, pricePerNight must be non-negative'
       })
       return
     }
@@ -106,7 +119,8 @@ export const createRoomType = async (req: Request<{}, {}, CreateRoomTypeBody>, r
       description: description.trim(),
       maxOccupancy,
       pricePerNight,
-      totalQuantity
+      totalQuantity,
+      isActive
     })
 
     const savedRoomType = await roomType.save()
@@ -118,10 +132,10 @@ export const createRoomType = async (req: Request<{}, {}, CreateRoomTypeBody>, r
     })
   } catch (error) {
     console.error('Error creating room type:', error)
-    
+
     // Handle mongoose validation errors
     if (error instanceof mongoose.Error.ValidationError) {
-      const errors = Object.values(error.errors).map(err => err.message)
+      const errors = Object.values(error.errors).map((err) => err.message)
       res.status(400).json({
         success: false,
         message: 'Validation error',
@@ -148,7 +162,10 @@ export const createRoomType = async (req: Request<{}, {}, CreateRoomTypeBody>, r
 }
 
 // Update a room type
-export const updateRoomType = async (req: Request<{ id: string }, {}, Partial<CreateRoomTypeBody>>, res: Response): Promise<void> => {
+export const updateRoomType = async (
+  req: Request<{ id: string }, {}, Partial<CreateRoomTypeBody>>,
+  res: Response
+): Promise<void> => {
   try {
     const { id } = req.params
     const updates = req.body
@@ -189,11 +206,11 @@ export const updateRoomType = async (req: Request<{ id: string }, {}, Partial<Cr
 
     // Check if name is being updated and if it conflicts with existing room type
     if (updates.name) {
-      const existingRoomType = await RoomType.findOne({ 
+      const existingRoomType = await RoomType.findOne({
         name: updates.name.trim(),
         _id: { $ne: id }
       })
-      
+
       if (existingRoomType) {
         res.status(400).json({
           success: false,
@@ -207,14 +224,10 @@ export const updateRoomType = async (req: Request<{ id: string }, {}, Partial<Cr
     if (updates.name) updates.name = updates.name.trim()
     if (updates.description) updates.description = updates.description.trim()
 
-    const roomType = await RoomType.findByIdAndUpdate(
-      id,
-      updates,
-      { 
-        new: true, 
-        runValidators: true 
-      }
-    )
+    const roomType = await RoomType.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true
+    })
 
     if (!roomType) {
       res.status(404).json({
@@ -231,10 +244,10 @@ export const updateRoomType = async (req: Request<{ id: string }, {}, Partial<Cr
     })
   } catch (error) {
     console.error('Error updating room type:', error)
-    
+
     // Handle mongoose validation errors
     if (error instanceof mongoose.Error.ValidationError) {
-      const errors = Object.values(error.errors).map(err => err.message)
+      const errors = Object.values(error.errors).map((err) => err.message)
       res.status(400).json({
         success: false,
         message: 'Validation error',
@@ -298,6 +311,47 @@ export const deleteRoomType = async (req: Request, res: Response): Promise<void>
     res.status(500).json({
       success: false,
       message: 'Error deleting room type',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    })
+  }
+}
+
+export const updateRoomTypeAvailability = async (
+  req: Request<{ id: string }, {}, { isActive: boolean }>,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params
+    const { isActive } = req.body
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({
+        success: false,
+        message: 'Invalid room type ID'
+      })
+      return
+    }
+
+    const roomType = await RoomType.findByIdAndUpdate(id, { isActive }, { new: true })
+
+    if (!roomType) {
+      res.status(404).json({
+        success: false,
+        message: 'Room type not found'
+      })
+      return
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Room type availability updated successfully',
+      data: roomType
+    })
+  } catch (error) {
+    console.error('Error updating room type:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Error updating room type',
       error: error instanceof Error ? error.message : 'Unknown error'
     })
   }

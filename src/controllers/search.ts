@@ -10,7 +10,10 @@ interface SearchQuery {
 }
 
 // Search available rooms by date range and guest count
-export const searchAvailableRooms = async (req: Request<{}, {}, {}, SearchQuery>, res: Response): Promise<void> => {
+export const searchAvailableRooms = async (
+  req: Request<{}, {}, {}, SearchQuery>,
+  res: Response
+): Promise<void> => {
   try {
     const { checkIn, checkOut, guests } = req.query
 
@@ -61,7 +64,7 @@ export const searchAvailableRooms = async (req: Request<{}, {}, {}, SearchQuery>
     // Validate dates are not in the past
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    
+
     if (checkInDate < today) {
       res.status(400).json({
         success: false,
@@ -116,8 +119,11 @@ export const searchAvailableRooms = async (req: Request<{}, {}, {}, SearchQuery>
           totalQuantity: roomType.totalQuantity,
           availableCount: Math.max(0, availableCount), // Ensure non-negative
           isAvailable: availableCount > 0,
+          isActive: roomType.isActive,
           // Calculate total price for the stay
-          totalPrice: roomType.pricePerNight * Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)),
+          totalPrice:
+            roomType.pricePerNight *
+            Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)),
           createdAt: roomType.createdAt,
           updatedAt: roomType.updatedAt
         }
@@ -125,16 +131,17 @@ export const searchAvailableRooms = async (req: Request<{}, {}, {}, SearchQuery>
     )
 
     // Filter to only show available rooms
-    const availableRoomsOnly = availableRooms.filter(room => room.isAvailable)
+    const availableRoomsOnly = availableRooms
 
     // Sort by price (ascending)
     availableRoomsOnly.sort((a, b) => a.pricePerNight - b.pricePerNight)
 
     res.status(200).json({
       success: true,
-      message: availableRoomsOnly.length > 0 
-        ? `Found ${availableRoomsOnly.length} available room type(s)` 
-        : 'No rooms available for the selected dates and guest count',
+      message:
+        availableRoomsOnly.length > 0
+          ? `Found ${availableRoomsOnly.length} available room type(s)`
+          : 'No rooms available for the selected dates and guest count',
       count: availableRoomsOnly.length,
       data: availableRoomsOnly,
       searchCriteria: {
@@ -155,7 +162,10 @@ export const searchAvailableRooms = async (req: Request<{}, {}, {}, SearchQuery>
 }
 
 // Get room availability for a specific room type (optional endpoint)
-export const getRoomTypeAvailability = async (req: Request<{ id: string }, {}, {}, SearchQuery>, res: Response): Promise<void> => {
+export const getRoomTypeAvailability = async (
+  req: Request<{ id: string }, {}, {}, SearchQuery>,
+  res: Response
+): Promise<void> => {
   try {
     const { id } = req.params
     const { checkIn, checkOut } = req.query
@@ -242,7 +252,9 @@ export const getRoomTypeAvailability = async (req: Request<{ id: string }, {}, {
         searchCriteria: {
           checkIn: checkInDate.toISOString().split('T')[0],
           checkOut: checkOutDate.toISOString().split('T')[0],
-          nights: Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24))
+          nights: Math.ceil(
+            (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)
+          )
         }
       }
     })

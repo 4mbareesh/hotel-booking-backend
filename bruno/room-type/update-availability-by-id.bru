@@ -1,0 +1,22 @@
+meta {
+  name: update-availability-by-id
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/rooms/update/690a00a7369a79cfa3ac364c
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "isActive": false
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

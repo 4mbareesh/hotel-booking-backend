@@ -4,7 +4,8 @@ import {
   getRoomTypeById,
   createRoomType,
   updateRoomType,
-  deleteRoomType
+  deleteRoomType,
+  updateRoomTypeAvailability
 } from '../controllers/room-type'
 
 const router: ExpressRouter = Router()
@@ -23,5 +24,7 @@ router.put('/:id', updateRoomType)
 
 // DELETE /api/rooms/:id - Delete a room type
 router.delete('/:id', deleteRoomType)
+
+router.post('/update/:id', updateRoomTypeAvailability)
 
 export default router
